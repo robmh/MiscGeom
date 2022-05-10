@@ -5,7 +5,6 @@
 #' @param s1 2x2 matrix with x-y coordinates of vertices of first segment in first and second columns, respectively.
 #' @param s2 2x2 matrix with x-y coordinates of vertices of second segment in first and second columns, respectively.
 #' @param include_limits Logical determines whether an intersection between the ends of the line segments is valid.
-#' This is useful to discard *******************
 #'
 #' @details It first checks whether lines are parallel, in which case they either have no common point or infinite.
 #' Then it determines the intersection between both lines and checks whether that intersection takes place within
