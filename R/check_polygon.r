@@ -15,7 +15,7 @@
 #' y <- cumsum(runif(10))*x^4
 #' plot(x,y,type="l",lty=1,lwd=2)
 #' points(c(x[10],x[1]),c(y[10],y[1]),type="l",lty=2,lwd=2)
-#' p <- test_simple_polygon(cbind(x,y))
+#' p <- check_polygon(cbind(x,y))
 #'
 #' @export
 
