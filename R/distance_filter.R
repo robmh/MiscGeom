@@ -1,42 +1,72 @@
-#' Title
+#' Distance-based spatial filtering
+#' 
+#' @description
+#' \code{distance_filter} applies a distance filter to a set of N-dimensional coordinates such that
+#' the resulting points are separated by at least a minimum distance.
+#' 
 #'
-#' @param xy numeric \code{data.frame} with as many rows as points to be included in the analysis
+#' @param df numeric \code{data.frame} with as many rows as points to be included in the analysis.
 #' @param min_dist \code{numeric}, minimum distance value between points. 
-#' @param shuffle  \code{logical}, set it to \code{TRUE} to randomly sample rows in \code{xy}.
+#' @param shuffle  \code{logical}, set it to \code{TRUE} to randomly shuffle the points in \code{df}.
 #' If not set, algorithm will always start at first row and will move down to the last one.
 #' By default it is set to \code{TRUE}, which means that every time \code{distance_filter} is
 #' run the result will likely be different.
 #' @param method The method to be used (see \link[stats]{dist} for details).
 #'
 #' @return
+#' A \code{data.frame} with as many columns as \code{df} and with rows containing points that are
+#' separated by at least a distance \code{min_dist}. Coordinates for points can be of any dimension, i.e.
+#' \code{df} can have as many columns as needed (distances are calculated with the built-in \code{dist} function).
+#' If all distances are less than \code{min_dist} NA is returned.
+#' 
 #' @export
 #'
 #' @examples
-distance_filter <- function(xy, min_dist, method = "euclidean", shuffle = T) {
+#' 
+#' 
+#' # Random set of 2-D coordinates.
+#' df <- data.frame(x1 = runif(100)*10, x2 = runif(100)*10)
+#' 
+#' # Compute filtered and shuffled+filtered datasets. If you repeat the lines below
+#' # you'll notice that the "Original" and the "Filtered" plots do not change.
+#' par(mfcol = c(1, 3))
+#' plot(df, xlim = c(0, 10), ylim = c(0, 10), main = "Original")
+#' df_filt <- distance_filter(df, 2, shuffle = F)
+#' plot(df_filt, xlim = c(0, 10), ylim = c(0, 10), main = "Filtered")
+#' df_shuff_filt <- distance_filter(df, 2, shuffle = T)
+#' plot(df_shuff_filt, xlim = c(0, 10), ylim = c(0, 10), main = "Shuffled + Filtered")
+#' par(mfcol = c(1, 1))
+#' 
 
-  
-  stopifnot("Input 'xy' must be a data.frame" = is.data.frame(xy))
-  if (nrow(xy) < 2) return(xy)
+distance_filter <- function(df, min_dist, method = "euclidean", shuffle = T) {
+
+
+  stopifnot("Input 'df' must be a data.frame" = is.data.frame(df))
+  if (nrow(df) < 2) return(df)
   
 
   # Computation of distance matrix.
-  dxy <- as.matrix(dist(xy, method = method, diag = T))
-  diag(dxy) <- 1E64
+  d_df <- as.matrix(dist(df, method = method, diag = T))
+  diag(d_df) <- max(d_df, na.rm = T) + 1
   
   
   # Random shuffle, if set.
-  id <- 1:nrow(xy)
-  j <- if (shuffle) sample(id, 1) else 1
-  id <- id[-j]
+  id <- 1:nrow(df)
+  if (shuffle) id <- sample(id)
+  j <- id[1]
+  id <- id[-1]
 
 
   # Loop through remaining points. We pick them one by one, keeping only the good ones.
   for (i in id) {
     k <- c(j, i)
-    if (min(dxy[k, k]) > min_dist) j <- k
+    if (min(d_df[k, k]) > min_dist) j <- k
   }
 
   
-  return(xy[j, ])   
+  # If no points are found it returns NA.
+  if (length(j) == 1) df <- NA else df <- df[j, ]
+  
+  return(df)   
   
 }
