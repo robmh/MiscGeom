@@ -5,6 +5,7 @@
 #' @param xy 2D matrix with x-y coordinates of vertices.
 #'
 #' @details
+#' Calculations are...
 #'
 #' @return If
 #'

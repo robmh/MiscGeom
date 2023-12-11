@@ -2,22 +2,22 @@
 #' Distance-based spatial filtering
 #' 
 #' @description
-#' Function \code{distance_filter} applies a distance filter to a set of N-dimensional coordinates such that
+#' Function \code{distance_filter} applies a spatial filter to a set of N-dimensional coordinates such that
 #' the resulting points are separated by at least a minimum distance.
 #' 
 #'
 #' @param df numeric \code{data.frame} with as many rows as points to be included in the analysis.
-#' @param min_dist \code{numeric}, minimum distance value between points. 
+#' @param min_dist \code{numeric}, minimum distance value between points.
 #' @param shuffle  \code{logical}, set it to \code{TRUE} to randomly shuffle the points in \code{df}.
 #' If not set, algorithm will always start at first row and will move down to the last one.
 #' By default it is set to \code{TRUE}, which means that every time \code{distance_filter} is
-#' run the result will likely be different.
+#' called the result will likely be different.
 #' @param method The method to be used (see \link[stats]{dist} for details).
 #'
 #' @return
 #' A \code{data.frame} with as many columns as \code{df} and with rows containing points that are
 #' separated by at least a distance \code{min_dist}. Coordinates for points can be of any dimension, i.e.
-#' \code{df} can have as many columns as needed (distances are calculated with the built-in \code{dist} function).
+#' \code{df} can have as many columns as needed (distances are calculated with the built-in \link[stats]{dist} function).
 #' If all distances are less than \code{min_dist} NA is returned.
 #' 
 #' @export
