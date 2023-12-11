@@ -1,7 +1,8 @@
+#' @title
 #' Distance-based spatial filtering
 #' 
 #' @description
-#' \code{distance_filter} applies a distance filter to a set of N-dimensional coordinates such that
+#' Function \code{distance_filter} applies a distance filter to a set of N-dimensional coordinates such that
 #' the resulting points are separated by at least a minimum distance.
 #' 
 #'
@@ -22,7 +23,6 @@
 #' @export
 #'
 #' @examples
-#' 
 #' 
 #' # Random set of 2-D coordinates.
 #' df <- data.frame(x1 = runif(100)*10, x2 = runif(100)*10)
