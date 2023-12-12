@@ -56,7 +56,7 @@ distance_filter <- function(df, min_dist, columns = NULL, method = "euclidean", 
   }
 
 
-  # Computation of distance matrix.
+  # Computation of distance matrix. Fill diagonal with a very large number.
   dist_df <- as.matrix(dist(dfcoord, method = method, diag = T))
   diag(dist_df) <- max(dist_df, na.rm = T) + 1
   
