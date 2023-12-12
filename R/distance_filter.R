@@ -13,7 +13,7 @@
 #' By default it is set to \code{TRUE}, which means that every time \code{distance_filter} is
 #' called the result will likely be different.
 #' @param method The method to be used (see \link[stats]{dist} for details).
-#' @param columns 
+#' @param columns character vector, name of the columns in \code{df} to be used to measure distance.
 #'
 #' @return
 #' A \code{data.frame} with as many columns as \code{df} and with rows containing points that are
