@@ -14,6 +14,7 @@
 #' called the result will likely be different.
 #' @param method The method to be used (see \link[stats]{dist} for details).
 #' @param columns character vector, name of the columns in \code{df} to be used to measure distance.
+#' @param verbose logical, if TRUE a progress bar will be printed on terminal.
 #'
 #' @return
 #' A \code{data.frame} with as many columns as \code{df} and with rows containing points that are
@@ -39,7 +40,7 @@
 #' par(mfcol = c(1, 1))
 #' 
 
-distance_filter <- function(df, min_dist, columns = NULL, method = "euclidean", shuffle = T) {
+distance_filter <- function(df, min_dist, columns = NULL, method = "euclidean", shuffle = T, verbose = T) {
 
 
   # Input must be a data.frame or a 2D matrix.
@@ -65,10 +66,31 @@ distance_filter <- function(df, min_dist, columns = NULL, method = "euclidean", 
   if (shuffle) id <- sample(id)
   j <- id[1]
   id <- id[-1]
+  
+  
+  # Progress bar on screen.
+  if (verbose) {
+    cat("\n -> distance_filter: finding points whose distance is > min_dist...\n")
+    pb <- txtProgressBar(min = 0,
+                         max = length(id),
+                         style = 3,
+                         width = 50,
+                         char = "=")
+  }
 
 
   # Loop through remaining points. We pick them one by one, keeping only the good ones.
+  if (verbose) icount <- 0
   for (i in id) {
+    
+    
+    # Progress bar.
+    if (verbose) {
+      icount <- icount + 1
+      setTxtProgressBar(pb, icount)
+    }
+    
+    
     k <- c(j, i)
     if (min(dist_df[k, k]) > min_dist) j <- k
   }
@@ -76,6 +98,10 @@ distance_filter <- function(df, min_dist, columns = NULL, method = "euclidean", 
   
   # If no points are found it returns NA.
   if (length(j) == 1) df <- NA else df <- df[j, ]
+  
+  
+  if (verbose) cat("\n")
+  
   
   return(df)   
   
