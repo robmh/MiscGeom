@@ -13,6 +13,7 @@
 #' By default it is set to \code{TRUE}, which means that every time \code{distance_filter} is
 #' called the result will likely be different.
 #' @param method The method to be used (see \link[stats]{dist} for details).
+#' @param columns 
 #'
 #' @return
 #' A \code{data.frame} with as many columns as \code{df} and with rows containing points that are
@@ -38,20 +39,29 @@
 #' par(mfcol = c(1, 1))
 #' 
 
-distance_filter <- function(df, min_dist, method = "euclidean", shuffle = T) {
+distance_filter <- function(df, min_dist, columns = NULL, method = "euclidean", shuffle = T) {
 
 
-  stopifnot("Input 'df' must be a data.frame" = is.data.frame(df))
-  if (nrow(df) < 2) return(df)
+  # Input must be a data.frame or a 2D matrix.
+  stopifnot("Input 'df' must be a data.frame or a matrix" = any(c(is.data.frame(df), is.matrix(df), length(dim(df)) == 2)))
+
   
+  # Check columns and select those that will be used to determine distance.
+  if (is.null(columns)) {
+    dfcoord <- df
+  } else {
+    stopifnot("All names in 'columns' must match column names in 'df'" = all(columns %in% colnames(df)))
+    dfcoord <- df[, columns]
+  }
+
 
   # Computation of distance matrix.
-  d_df <- as.matrix(dist(df, method = method, diag = T))
-  diag(d_df) <- max(d_df, na.rm = T) + 1
+  dist_df <- as.matrix(dist(dfcoord, method = method, diag = T))
+  diag(dist_df) <- max(dist_df, na.rm = T) + 1
   
   
   # Random shuffle, if set.
-  id <- 1:nrow(df)
+  id <- 1:nrow(dfcoord)
   if (shuffle) id <- sample(id)
   j <- id[1]
   id <- id[-1]
@@ -60,7 +70,7 @@ distance_filter <- function(df, min_dist, method = "euclidean", shuffle = T) {
   # Loop through remaining points. We pick them one by one, keeping only the good ones.
   for (i in id) {
     k <- c(j, i)
-    if (min(d_df[k, k]) > min_dist) j <- k
+    if (min(dist_df[k, k]) > min_dist) j <- k
   }
 
   
