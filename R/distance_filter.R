@@ -70,7 +70,7 @@ distance_filter <- function(df, min_dist, columns = NULL, method = "euclidean", 
   
   # Progress bar on screen.
   if (verbose) {
-    cat("\n -> distance_filter: finding points whose distance is > min_dist...\n")
+    cat(paste0("\n -> distance_filter: finding points whose distance is > ", min_dist, "...\n"))
     pb <- txtProgressBar(min = 0,
                          max = length(id),
                          style = 3,
