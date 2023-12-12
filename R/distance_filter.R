@@ -91,8 +91,9 @@ distance_filter <- function(df, min_dist, columns = NULL, method = "euclidean", 
     }
     
     
+    # Check distances.
     k <- c(j, i)
-    if (min(dist_df[k, k]) > min_dist) j <- k
+    if (min(dist_df[i, k]) > min_dist & min(dist_df[k, i]) > min_dist) j <- k
   }
 
   
