@@ -27,7 +27,7 @@
 #' @examples
 #' 
 #' # Random set of 2-D coordinates.
-#' df <- data.frame(x1 = runif(100)*10, x2 = runif(100)*10)
+#' df <- data.frame(x1 = runif(10000)*10, x2 = runif(10000)*10)
 #' 
 #' # Compute filtered and shuffled+filtered datasets. If you repeat the lines below
 #' # you'll notice that the "Original" and the "Filtered" plots do not change.
@@ -93,7 +93,8 @@ distance_filter <- function(df, min_dist, columns = NULL, method = "euclidean", 
     
     # Check distances.
     k <- c(j, i)
-    if (min(dist_df[i, k]) > min_dist & min(dist_df[k, i]) > min_dist) j <- k
+    # if (min(dist_df[i, k]) > min_dist & min(dist_df[k, i]) > min_dist) j <- k
+    if (min(dist_df[i, k]) > min_dist) j <- k
   }
 
   
