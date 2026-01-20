@@ -27,19 +27,27 @@
 #' @export
 #'
 #' @examples
+#' # install.packages(c("sf", "gstat", "sp))
 #' 
-#' # Random set of 2-D coordinates.
-#' df <- data.frame(x1 = runif(10000)*10, x2 = runif(10000)*10)
+#' library(sp)
+#' data(meuse)
 #' 
-#' # Compute filtered and shuffled+filtered datasets. If you repeat the lines below
-#' # you'll notice that the "Original" and the "Filtered" plots do not change.
-#' par(mfcol = c(1, 3))
-#' plot(df, xlim = c(0, 10), ylim = c(0, 10), main = "Original")
-#' df_filt <- distance_filter(df, 2, shuffle = F)
-#' plot(df_filt, xlim = c(0, 10), ylim = c(0, 10), main = "Filtered")
-#' df_shuff_filt <- distance_filter(df, 2, shuffle = T)
-#' plot(df_shuff_filt, xlim = c(0, 10), ylim = c(0, 10), main = "Shuffled + Filtered")
-#' par(mfcol = c(1, 1))
+#' # First we plot a variogram with all points.
+#' meuse_sf <- sf::st_as_sf(meuse, coords = c("x", "y"), crs = NA)
+#' cutoff <- 4000
+#' vmeuse <- gstat::variogram(log(zinc) ~ 1, data = meuse_sf, boundaries = boundaries, cutoff = cutoff)
+#' plot(vmeuse, main = "Variogram", type="l", lwd=2,xlim=c(0, 4000), ylim=c(0, 1.5))
+#' 
+#' # We now choose distance = 500 as our minimum distance value.
+#' min_dist <- 500
+#' cutoff <- 4000
+#' boundaries <- seq(min_dist, cutoff, by = 250)
+#' 
+#' #' Compute and plot variogram.
+#' meuse_filtered <- distance_filter(meuse, min_dist = min_dist, columns = c("x", "y"), verbose = FALSE)
+#' meuse_filtered_sf <- sf::st_as_sf(meuse_filtered, coords = c("x", "y"), crs = NA)
+#' v1 <- gstat::variogram(log(zinc) ~ 1, data = meuse_filtered_sf, boundaries = boundaries, cutoff = cutoff)
+#' plot(v1, main = "Filtered variogram", xlim = c(0, 4000), ylim = c(0, 1.5))
 #' 
 
 distance_filter <- function(df, min_dist, strictly = TRUE, columns = NULL, method = "euclidean", shuffle = T, verbose = T) {
@@ -64,7 +72,7 @@ distance_filter <- function(df, min_dist, strictly = TRUE, columns = NULL, metho
   
   # Computation of distance matrix. Fill diagonal with a very large number.
   dist_df <- as.matrix(dist(dfcoord, method = method, diag = T))
-  diag(dist_df) <- min_dist + 1
+  diag(dist_df) <- max(dist_df) + 1e32
   
   
   # Random shuffle, if set.
@@ -96,7 +104,7 @@ distance_filter <- function(df, min_dist, strictly = TRUE, columns = NULL, metho
       setTxtProgressBar(pb, icount)
     }
     
-    
+  
     # Check distances.
     k <- c(j, i)
     if (min(dist_df[i, k]) %>=>% min_dist) j <- k
