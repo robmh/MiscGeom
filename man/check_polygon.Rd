@@ -15,6 +15,9 @@ If
 \description{
 It checks whether the sides of a general polygon do not intersect each other.
 }
+\details{
+Calculations are...
+}
 \examples{
 
 ## A simple polygon.

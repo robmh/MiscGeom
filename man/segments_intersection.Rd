@@ -4,47 +4,50 @@
 \alias{segments_intersection}
 \title{Check whether two line segments cross each other.}
 \usage{
-segments_intersection(s1, s2, include_limits = T)
+segments_intersection(s1, s2, include_limits = T, verbose = T)
 }
 \arguments{
-\item{s1}{2x2 matrix with x-y coordinates of vertices of first segment in first and second columns, respectively.}
+\item{s1}{2x2 matrix with coordinates of vertices of the first segment. First and second columns correspond
+to \code{x} and \code{y} coordinates, respectively.}
 
-\item{s2}{2x2 matrix with x-y coordinates of vertices of second segment in first and second columns, respectively.}
+\item{s2}{2x2 matrix with coordinates of vertices of second segment, same as for \code{s1}.}
 
-\item{include_limits}{Logical determines whether an intersection between the ends of the line segments is valid.}
+\item{include_limits}{logical determining whether an intersection between the ends of the line segments is valid.
+Default is TRUE.}
+
+\item{verbose}{logical determining whether warnings are issued when at least one of the segments has zero length
+(i.e. it is a point) or segments are parallel. Default is TRUE.}
 }
 \value{
-Coordinates x-y of intersection point, if it exists, or NA if lines are parallel, or
-FALSE if lines are not parallel but they do not intersect within the limits of both segments.
+Coordinates \code{x-y} of intersection point, if it exists. If one of the segments is a point, or the two
+segments are parallel, it returns NA. If segment are not parallel but they do not intersect, it returns FALSE.
 }
 \description{
 The line segments defined by the two input matrices are intersected.
 }
 \details{
-It first checks whether lines are parallel, in which case they either have no common point or infinite.
-Then it determines the intersection between both lines and checks whether that intersection takes place within
-the limits of both segments.
+It implements basic planar geometric formulas.
 }
 \examples{
 
 ## An example of intersection.
-s1 <- matrix(c(0,1,0,1),2,2)
-s2 <- matrix(c(0,1,1,0),2,2)
-plot(s1,type="l",lwd=2,xlab="x",ylab="y")
-points(s2,type="l",lty=2,lwd=2)
-xp <- segments_intersection(s1,s2)
-points(xp[1],xp[2],cex=2)
+s1 <- matrix(c(0, 1, 0, 1), 2, 2)
+s2 <- matrix(c(0, 1, 1, 0), 2, 2)
+plot(s1, type = "l", lwd = 2, xlab = "x", ylab = "y")
+points(s2, type = "l", lty = 2, lwd = 2)
+xp <- segments_intersection(s1, s2)
+points(xp[1], xp[2],cex = 2)
 
 ## An example of segments that do not intersect.
-plot(s1+3,type="l",lwd=2,xlab="x",ylab="y",xlim=c(0,4),ylim=c(0,4))
-points(s2,type="l",lty=2,lwd=2)
-segments_intersection(s1+3,s2)
+plot(s1 + 3, type = "l", lwd = 2, xlab = "x", ylab = "y", xlim = c(0, 4), ylim = c(0, 4))
+points(s2, type = "l", lty = 2,lwd = 2)
+segments_intersection(s1 + 3, s2)
 
 # An example of parallel lines.
-s1 <- matrix(c(1,2,1,2),2,2)
-s2 <- matrix(c(0,3,1,4),2,2)
-plot(s1,type="l",lwd=2,xlab="x",ylab="y",xlim=c(0,4),ylim=c(0,4))
-points(s2,type="l",lty=2,lwd=2)
-segments_intersection(s1,s2)
+s1 <- matrix(c(1, 2, 1, 2), 2, 2)
+s2 <- matrix(c(0, 3, 1, 4), 2, 2)
+plot(s1, type = "l", lwd = 2, xlab = "x", ylab = "y", xlim = c(0, 4), ylim = c(0, 4))
+points(s2, type = "l", lty = 2, lwd = 2)
+segments_intersection(s1, s2)
 
 }

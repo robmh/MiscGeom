@@ -5,7 +5,6 @@
 #' Function \code{distance_filter} applies a spatial filter to a set of N-dimensional coordinates such that
 #' the resulting points are separated by at least a minimum distance.
 #' 
-#'
 #' @param df numeric \code{data.frame} with as many rows as points to be included in the analysis.
 #' @param min_dist \code{numeric}, minimum distance value between points.
 #' @param strictly \code{logical}, set it to \code{TRUE} to evaluate distance strictly larger than \code{min_dist}.
@@ -22,7 +21,10 @@
 #' A \code{data.frame} with as many columns as \code{df} and with rows containing points that are
 #' separated by at least a distance \code{min_dist}. Coordinates for points can be of any dimension, i.e.
 #' \code{df} can have as many columns as needed (distances are calculated with the built-in \link[stats]{dist} function).
-#' If all distances are less than \code{min_dist} NA is returned.
+#' If all distances are less than \code{min_dist}, NA is returned.
+#' 
+#' @details
+#' Simple algorithm that goes point by point checking its distance to all others.
 #' 
 #' @export
 #'
@@ -43,13 +45,13 @@
 #' cutoff <- 4000
 #' boundaries <- seq(min_dist, cutoff, by = 250)
 #' 
-#' #' Compute and plot variogram.
+#' # Compute and plot variogram. Every time 'distance_filter' is run the resulting filtered 
+#' # dataset is different. 
 #' meuse_filtered <- distance_filter(meuse, min_dist = min_dist, columns = c("x", "y"), verbose = FALSE)
 #' meuse_filtered_sf <- sf::st_as_sf(meuse_filtered, coords = c("x", "y"), crs = NA)
 #' v1 <- gstat::variogram(log(zinc) ~ 1, data = meuse_filtered_sf, boundaries = boundaries, cutoff = cutoff)
 #' plot(v1, main = "Filtered variogram", xlim = c(0, 4000), ylim = c(0, 1.5))
 #' 
-
 distance_filter <- function(df, min_dist, strictly = TRUE, columns = NULL, method = "euclidean", shuffle = T, verbose = T) {
 
 
